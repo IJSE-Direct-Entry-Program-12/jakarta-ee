@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <!-- Filter Definitions -->
+    <filter>
+        <filter-name>start-filter</filter-name>
+        <filter-class>lk.ijse.dep12.filter.StartFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>customer-filter</filter-name>
+        <filter-class>lk.ijse.dep12.filter.CustomerFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>item-filter</filter-name>
+        <filter-class>lk.ijse.dep12.filter.ItemFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>end-filter</filter-name>
+        <filter-class>lk.ijse.dep12.filter.EndFilter</filter-class>
+    </filter>
+
+    <!-- Filter Mappings -->
+
+    <filter-mapping>
+        <filter-name>start-filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>customer-filter</filter-name>
+        <url-pattern>/customers</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>item-filter</filter-name>
+        <url-pattern>/items</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>end-filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>
