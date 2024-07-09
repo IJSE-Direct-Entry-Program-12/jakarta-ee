@@ -1,5 +1,6 @@
 package lk.ijse.dep12;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import lk.ijse.dep12.to.User;
 
 import javax.sql.DataSource;
 import javax.sql.rowset.serial.SerialBlob;
@@ -21,6 +23,7 @@ public class UserServlet extends HttpServlet {
 
     @Resource(lookup = "java:comp/env/jdbc/to-do-app-db")
     private DataSource pool;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -45,14 +48,9 @@ public class UserServlet extends HttpServlet {
             resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_CREATED);
 
-            resp.getWriter().println("""
-                {
-                    "id": %s,
-                    "email": "%s",
-                    "name": "%s"
-                }
-            """.formatted(newUserId, email, name));
-            resp.getWriter().flush();
+            User user = new User(newUserId, name, email);
+            mapper.writeValue(resp.getWriter(), user);
+
         } catch (SQLException e) {
             resp.getWriter().println("<h1>Failed to save the user: %s</h1>".formatted(e.getMessage()));
             e.printStackTrace();
