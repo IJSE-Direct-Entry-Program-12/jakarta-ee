@@ -22,7 +22,7 @@ public class UserValidationDemo {
                 .constraintExpressionLanguageFeatureLevel(ExpressionLanguageFeatureLevel.BEAN_METHODS)
                 .buildValidatorFactory()) {
             Validator validator = vf.getValidator();
-            Set<ConstraintViolation<User>> violationSet = validator.validate(user1);
+            Set<ConstraintViolation<User>> violationSet = validator.validate(user3);
             if (violationSet.isEmpty()){
                 System.out.println("Validation Passed");
             }else{

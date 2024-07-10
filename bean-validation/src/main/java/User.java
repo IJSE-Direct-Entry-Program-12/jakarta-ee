@@ -22,6 +22,6 @@ public class User {
     @NotBlank
     private String password;
     @NotNull
-    @Dob(message = "${'ijse'.toUpperCase()}")
+    @Dob(message = "${abc.isChild(validatedValue) ? '18 ata adui' : '60 ata wadi'}")
     private LocalDate birthday;
 }
