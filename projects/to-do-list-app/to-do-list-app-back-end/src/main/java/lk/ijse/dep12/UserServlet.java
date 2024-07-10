@@ -9,6 +9,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import lk.ijse.dep12.to.User;
 
 import javax.sql.DataSource;
@@ -16,6 +20,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
+import java.util.Set;
 
 @WebServlet(name = "user-servlet", urlPatterns = "/users/*")
 @MultipartConfig(location = "/tmp", maxFileSize = 5 * 1024 * 1024)
@@ -32,6 +37,16 @@ public class UserServlet extends HttpServlet {
         String password = req.getParameter("password");
         Part picture = req.getPart("picture");
 
+        User user = new User(null, name, email, password, picture);
+        try (ValidatorFactory vf = Validation.buildDefaultValidatorFactory()) {
+            Validator validator = vf.getValidator();
+            Set<ConstraintViolation<User>> violations = validator.validate(user);
+            if (!violations.isEmpty()){
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+        }
+
         try (Connection connection = pool.getConnection()) {
             PreparedStatement stm = connection.prepareStatement("""
                         INSERT INTO "user" (email, password, name, picture) VALUES (?, ?, ?, ?)
@@ -44,11 +59,11 @@ public class UserServlet extends HttpServlet {
             ResultSet rs = stm.getGeneratedKeys();
             rs.next();
             int newUserId = rs.getInt("id");
+            user.setId(newUserId);
 
             resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_CREATED);
 
-            User user = new User(newUserId, name, email);
             mapper.writeValue(resp.getWriter(), user);
 
         } catch (SQLException e) {
