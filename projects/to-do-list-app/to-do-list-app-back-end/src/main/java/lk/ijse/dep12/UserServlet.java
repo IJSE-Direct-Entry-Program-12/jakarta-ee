@@ -48,7 +48,8 @@ public class UserServlet extends HttpServlet {
         if (!violationSet.isEmpty()) {
             resp.setContentType("application/json");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            mapper.writeValue(resp.getWriter(), new ErrorResponse(400, "Bad Request",
+            mapper.writeValue(resp.getWriter(), new ErrorResponse(req.getRequestURI(),
+                    400, "Bad Request",
                     "Validation Failed", violationSet));
             return;
         }
