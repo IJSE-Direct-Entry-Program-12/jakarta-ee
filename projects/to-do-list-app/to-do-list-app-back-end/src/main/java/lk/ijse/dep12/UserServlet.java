@@ -26,8 +26,15 @@ import java.util.Set;
 public class UserServlet extends HttpServlet {
 
     private final ObjectMapper mapper = new ObjectMapper();
+    private final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    private final Validator validator = validatorFactory.getValidator();
     @Resource(lookup = "java:comp/env/jdbc/to-do-app-db")
     private DataSource pool;
+
+    @Override
+    public void destroy() {
+        validatorFactory.close();
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -37,16 +44,13 @@ public class UserServlet extends HttpServlet {
         Part picture = req.getPart("picture");
 
         User user = new User(null, name, email, password, picture);
-        try (ValidatorFactory vf = Validation.buildDefaultValidatorFactory()) {
-            Validator validator = vf.getValidator();
-            Set<ConstraintViolation<User>> violationSet = validator.validate(user);
-            if (!violationSet.isEmpty()) {
-                resp.setContentType("application/json");
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                mapper.writeValue(resp.getWriter(), new ErrorResponse(400, "Bad Request",
-                        "Validation Failed", violationSet));
-                return;
-            }
+        Set<ConstraintViolation<User>> violationSet = validator.validate(user);
+        if (!violationSet.isEmpty()) {
+            resp.setContentType("application/json");
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            mapper.writeValue(resp.getWriter(), new ErrorResponse(400, "Bad Request",
+                    "Validation Failed", violationSet));
+            return;
         }
 
         try (Connection connection = pool.getConnection()) {
