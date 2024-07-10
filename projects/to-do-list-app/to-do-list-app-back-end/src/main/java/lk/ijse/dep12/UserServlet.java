@@ -13,11 +13,10 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import lk.ijse.dep12.to.ErrorResponse;
 import lk.ijse.dep12.to.User;
 
 import javax.sql.DataSource;
-import javax.sql.rowset.serial.SerialBlob;
-import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Set;
@@ -26,9 +25,9 @@ import java.util.Set;
 @MultipartConfig(location = "/tmp", maxFileSize = 5 * 1024 * 1024)
 public class UserServlet extends HttpServlet {
 
+    private final ObjectMapper mapper = new ObjectMapper();
     @Resource(lookup = "java:comp/env/jdbc/to-do-app-db")
     private DataSource pool;
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -40,9 +39,12 @@ public class UserServlet extends HttpServlet {
         User user = new User(null, name, email, password, picture);
         try (ValidatorFactory vf = Validation.buildDefaultValidatorFactory()) {
             Validator validator = vf.getValidator();
-            Set<ConstraintViolation<User>> violations = validator.validate(user);
-            if (!violations.isEmpty()){
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            Set<ConstraintViolation<User>> violationSet = validator.validate(user);
+            if (!violationSet.isEmpty()) {
+                resp.setContentType("application/json");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                mapper.writeValue(resp.getWriter(), new ErrorResponse(400, "Bad Request",
+                        "Validation Failed", violationSet));
                 return;
             }
         }
@@ -54,7 +56,7 @@ public class UserServlet extends HttpServlet {
             stm.setString(1, email);
             stm.setString(2, password);
             stm.setString(3, name);
-            stm.setBinaryStream(4, picture.getInputStream());
+            stm.setBinaryStream(4, picture == null ? null : picture.getInputStream());
             stm.executeUpdate();
             ResultSet rs = stm.getGeneratedKeys();
             rs.next();
@@ -88,9 +90,9 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getMethod().equalsIgnoreCase("PATCH")){
+        if (req.getMethod().equalsIgnoreCase("PATCH")) {
             doPatch(req, resp);
-        }else{
+        } else {
             super.service(req, resp);
         }
     }

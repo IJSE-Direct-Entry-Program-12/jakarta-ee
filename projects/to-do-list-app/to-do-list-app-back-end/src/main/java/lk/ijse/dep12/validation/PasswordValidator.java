@@ -10,6 +10,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
+        if (password == null) return false;
         if (password.length() < 6) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("Password must be at least 6 characters")
