@@ -12,3 +12,5 @@ CREATE TABLE spouse(
     employee_id VARCHAR(10) NOT NULL,
     CONSTRAINT fk_employee FOREIGN KEY (employee_id) REFERENCES employee(id)
 );
+
+ALTER TABLE spouse ADD CONSTRAINT uk_employee_id UNIQUE (employee_id);
