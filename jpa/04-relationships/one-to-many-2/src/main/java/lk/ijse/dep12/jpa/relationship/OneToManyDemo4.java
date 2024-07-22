@@ -1,0 +1,28 @@
+package lk.ijse.dep12.jpa.relationship;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import lk.ijse.dep12.jpa.relationship.entity.LawSuite;
+import lk.ijse.dep12.jpa.relationship.entity.Lawyer;
+import lk.ijse.dep12.jpa.relationship.util.JpaUtil;
+
+public class OneToManyDemo4 {
+    public static void main(String[] args) {
+        try (EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
+             EntityManager em = emf.createEntityManager()) {
+            EntityTransaction tx = em.getTransaction();
+            try {
+                tx.begin();
+
+                LawSuite lawSuite = em.find(LawSuite.class, "LS-001");
+                lawSuite.setLawyer(null);   // DELETE
+
+                tx.commit();
+            }catch (Throwable t){
+                tx.rollback();
+                t.printStackTrace();
+            }
+        }
+    }
+}
