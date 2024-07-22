@@ -5,13 +5,14 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import lk.ijse.dep12.jpa.relationship.entity.LawSuite;
 import lk.ijse.dep12.jpa.relationship.entity.Lawyer;
+import lk.ijse.dep12.jpa.relationship.entity.LawyerLawSuite;
 import lk.ijse.dep12.jpa.relationship.util.JpaUtil;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
 
-public class OneToManyDemo2 {
+public class OneToManyDemo6 {
     public static void main(String[] args) {
         try (EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
              EntityManager em = emf.createEntityManager()) {
@@ -19,9 +20,12 @@ public class OneToManyDemo2 {
             try {
                 tx.begin();
 
-                Lawyer tharindu = em.find(Lawyer.class, "L001");
+                Lawyer buddhika = em.find(Lawyer.class, "L002");
                 LawSuite ls002 = em.find(LawSuite.class, "LS-002");
-                //ls002.setLawyer(tharindu);          // INSERT
+                LawyerLawSuite lawyerLawSuite = new LawyerLawSuite(ls002, buddhika,
+                        new BigDecimal("50000"), Date.valueOf(LocalDate.now()));
+
+                em.persist(lawyerLawSuite);
 
                 tx.commit();
             }catch (Throwable t){

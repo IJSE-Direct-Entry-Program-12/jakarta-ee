@@ -17,3 +17,6 @@ CREATE TABLE lawyer_law_suite
     CONSTRAINT fk_lawyer FOREIGN KEY (lawyer_reg_number) REFERENCES lawyer (reg_number),
     CONSTRAINT fk_law_suite FOREIGN KEY (law_suite_id) REFERENCES law_suite(id)
 );
+
+ALTER TABLE lawyer_law_suite ADD COLUMN fee DECIMAL(9, 2) NOT NULL;
+ALTER TABLE lawyer_law_suite ADD COLUMN retainer_date DATE NOT NULL;

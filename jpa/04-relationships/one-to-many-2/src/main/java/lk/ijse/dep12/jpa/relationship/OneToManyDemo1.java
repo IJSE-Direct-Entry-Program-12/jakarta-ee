@@ -23,7 +23,7 @@ public class OneToManyDemo1 {
                 Lawyer buddhika = new Lawyer("L002", "Buddhika");
 
                 LawSuite ls001 = new LawSuite("LS-001", "Criminal",
-                        "Sappage Sapa Kama", Date.valueOf(LocalDate.now()), tharindu);
+                        "Sappage Sapa Kama", Date.valueOf(LocalDate.now())/*, tharindu*/);
                 LawSuite ls002 = new LawSuite("LS-002", "Criminal",
                         "Minuwangoada Shooting", Date.valueOf(LocalDate.now()));
                 LawSuite ls003 = new LawSuite("LS-003", "Criminal",

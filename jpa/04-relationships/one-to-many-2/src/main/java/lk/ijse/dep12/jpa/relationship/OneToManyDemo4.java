@@ -16,7 +16,7 @@ public class OneToManyDemo4 {
                 tx.begin();
 
                 LawSuite lawSuite = em.find(LawSuite.class, "LS-001");
-                lawSuite.setLawyer(null);   // DELETE
+                //lawSuite.setLawyer(null);   // DELETE
 
                 tx.commit();
             }catch (Throwable t){
