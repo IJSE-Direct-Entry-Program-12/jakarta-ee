@@ -8,6 +8,8 @@
 
         <class>lk.ijse.dep12.jpa.relationship.entity.Customer</class>
         <class>lk.ijse.dep12.jpa.relationship.entity.Order</class>
+        <class>lk.ijse.dep12.jpa.relationship.entity.Lawyer</class>
+        <class>lk.ijse.dep12.jpa.relationship.entity.LawSuite</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
