@@ -1,0 +1,11 @@
+#name: many-to-many-project
+services:
+  container1:
+    image: mysql
+    container_name: mysql_project_container
+    environment:
+      - MYSQL_ROOT_PASSWORD = mysql
+      - MYSQL_TCP_PORT = 15000
+    network_mode: host
+    volumes:
+      - ~/project:/var/lib/mysql
