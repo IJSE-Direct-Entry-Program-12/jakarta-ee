@@ -1,0 +1,13 @@
+services:
+  container:
+    environment:
+      MARIADB_ROOT_PASSWORD: mariasql
+    ports:
+      - 5000:3306
+    volumes:
+      - ~/mariadb:/var/lib/mariadb
+    image: mariadb
+    container_name: mariadb_container
+
+#  docker run -e MARIADB_ROOT_PASSWORD=mariasql -p 5000:3306 \
+#             -v ~/mariadb:/var/lib/mariadb mariadb
